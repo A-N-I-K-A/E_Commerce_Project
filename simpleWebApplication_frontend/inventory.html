@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+
+        <div class="dropdown">
+          <button>Category</button>
+          <div class="dropdown-menu">
+            <a href="#" onclick="filterCategory('')">All</a>
+            <a href="#" onclick="filterCategory('Electronics')">Electronics</a>
+            <a href="#" onclick="filterCategory('Clothing')">Clothing</a>
+            <a href="#" onclick="filterCategory('Books')">Books</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button>Product Inventory</button>
+          <div class="dropdown-menu">
+            <a href="inventory.html">Manage Products</a>
+          </div>
+        </div>
+      </div>
+
+      <input
+        type="text"
+        id="globalSearch"
+        class="search-box"
+        placeholder="Search products..."
+        onkeyup="globalSearch()"
+      />
+    </div>
+  </nav>
+    <div class="page-wrapper">
+        <div class="inventory-container">
+            <button id="show-product-btn">Show All Products</button>
+            <button id="add-product-btn">Add Product</button>
+            <button id="update-product-btn">Edit Product</button>
+            <button id="delete-product-btn">Delete Product</button>
+        </div>
+        <div class="result-container">
+            <div id="products-container" class="container hidden"></div>
+            <div id="add-container" class="container hidden">
+                <div class="form-container">
+                        <h2>Add New Product</h2>
+                        <form id="add-product-form">
+                            <input type="number" id="prodID" placeholder="Product ID" required>
+                            <input type="text" id="prodName" placeholder="Product Name" required>
+                            <input type="number" id="prodPrice" placeholder="Price (BDT)" min="0" step="0.01" required>
+                            
+                            <div class="form-buttons">
+                                <button type="submit" id="add-submit">Save Product</button>
+                                <button type="button" id="add-cancel">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="alert-overlay" class="alert-hidden">
+                        <div id="alert-box">
+                            <div id="alert-message">Product added successfully!</div>
+                        </div>
+                    </div>
+                </div>
+            <div id="update-container" class="container hidden">
+                    <div class="form-container">
+                        <h2>Update Product</h2>
+                        <form id="update-product-form">
+                            <input type="number" id="prodID" placeholder="Product ID" required>
+                            <input type="text" id="prodName" placeholder="Product Name" required>
+                            <input type="number" id="prodPrice" placeholder="Price (BDT)" min="0" step="0.01" required>
+                            
+                            <div class="form-buttons">
+                                <button type="submit" id="update-submit">Update Product</button>
+                                <button type="button" id="update-cancel">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="alert-overlay" class="alert-hidden">
+                        <div id="alert-box">
+                            <div id="alert-message">Product updated successfully!</div>
+                        </div>
+                    </div>
+            </div>
+            <div id="delete-container" class="container hidden">
+                    <div class="form-container">
+                        <h2>Delete Product</h2>
+                        <form id="delete-product-form">
+                            <input type="number" id="prodID" placeholder="Product ID" required>
+                            <div class="form-buttons">
+                                <button type="submit" id="delete-submit">Delete Product</button>
+                                <button type="button" id="delete-cancel">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="alert-overlay" class="alert-hidden">
+                        <div id="alert-box">
+                            <div id="alert-message">Product deleted successfully!</div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="app.js"></script>
+</html>

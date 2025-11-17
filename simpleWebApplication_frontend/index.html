@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inventory Shop</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+
+        <div class="dropdown">
+          <button>Category</button>
+          <div class="dropdown-menu">
+            <a href="#" onclick="filterCategory('')">All</a>
+            <a href="#" onclick="filterCategory('Electronics')">Electronics</a>
+            <a href="#" onclick="filterCategory('Clothing')">Clothing</a>
+            <a href="#" onclick="filterCategory('Books')">Books</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button>Product Inventory</button>
+          <div class="dropdown-menu">
+            <a href="inventory.html">Manage Products</a>
+          </div>
+        </div>
+      </div>
+
+      <input
+        type="text"
+        id="globalSearch"
+        class="search-box"
+        placeholder="Search products..."
+        onkeyup="globalSearch()"
+      />
+    </div>
+  </nav>
+  <main>
+    <section id="home" class="section active">
+      <div class="welcome">
+        <h1>Welcome to Inventory Shop</h1>
+        <p>
+          This is a simple inventory management system. Browse products by category,
+          search instantly, and use the <strong>Product Inventory</strong> menu to add, edit, or delete items.
+        </p>
+      </div>
+    </section>
+  </main>
+  </body>
+  <script src="app.js"></script>
+</html>
