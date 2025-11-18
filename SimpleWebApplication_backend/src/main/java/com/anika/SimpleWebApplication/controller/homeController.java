@@ -14,7 +14,7 @@ public class homeController {
     //we can also use @ResponseBody annotation before this method
     //@ResponseBody
     public String greet(){
-       return "Welcome";
+       return "Welcome to E_commerce Site";
     }
     
     @RequestMapping("/about")
