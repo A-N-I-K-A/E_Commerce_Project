@@ -8,13 +8,11 @@ import org.springframework.stereotype.Component;
 @Entity
 public class users {
     @Id
-    private Integer id;
     private String username;
     private String password;
 
 
-    public users(Integer id, String username, String password) {
-        this.id = id;
+    public users( String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -22,13 +20,7 @@ public class users {
     public users() {
     }
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -49,8 +41,7 @@ public class users {
     @Override
     public String toString() {
         return "users{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
+                "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

@@ -31,15 +31,25 @@
         </div>
       </div>
 
-      <input
-        type="text"
-        id="globalSearch"
-        class="search-box"
-        placeholder="Search products..."
-        onkeyup="globalSearch()"
-      />
+    <div class="search-container">
+        <input
+          type="text"
+          id="globalSearch"
+          class="search-box"
+          placeholder="Search products..."
+        />
+        <button id="search-btn">Search</button>
+      </div>
+
+       <div id="auth-section" style="margin-left: 20px; display: flex; align-items: center;">
+      </div>
+      
     </div>
   </nav>
+  <div id="search-overlay" class="search-overlay-hidden">
+    <div class="search-overlay-box">
+    </div>
+  </div>
     <div class="page-wrapper">
         <div class="inventory-container">
             <button id="show-product-btn">Show All Products</button>
@@ -110,4 +120,5 @@
     </div>
 </body>
 <script src="app.js"></script>
+<script src="navbar.js"></script>
 </html>

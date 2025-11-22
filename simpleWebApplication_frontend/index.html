@@ -30,13 +30,20 @@
         </div>
       </div>
 
-      <input
-        type="text"
-        id="globalSearch"
-        class="search-box"
-        placeholder="Search products..."
-        onkeyup="globalSearch()"
-      />
+      <div class="search-container">
+        <input
+          type="text"
+          id="globalSearch"
+          class="search-box"
+          placeholder="Search products..."
+        />
+        <button id="search-btn">Search</button>
+      </div>
+
+      <div id="auth-section" style="margin-left: 20px; display: flex; align-items: center;">
+      </div>
+    </div>
+
     </div>
   </nav>
   <main>
@@ -48,8 +55,14 @@
           search instantly, and use the <strong>Product Inventory</strong> menu to add, edit, or delete items.
         </p>
       </div>
+      
+      <div id="search-overlay" class="search-overlay-hidden">
+        <div class="search-overlay-box">
+        </div>
+      </div>
     </section>
   </main>
   </body>
   <script src="app.js"></script>
+  <script src="navbar.js"></script>
 </html>

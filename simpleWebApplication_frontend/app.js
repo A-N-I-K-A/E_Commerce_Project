@@ -21,10 +21,22 @@ let deleteContainer=document.querySelector('#delete-container')
 let deleteSubmit=document.querySelector('#delete-submit')
 let deleteCancel=document.querySelector('#delete-cancel')
 
-
+let searchBtn=document.querySelector('.search-container #search-btn')
 
 let productLoaded=false
 
+
+function getAuthHeader() {
+  const token = localStorage.getItem('token');
+  console.log(token)
+  if (!token) {
+    alert("Session expired! Please login again.");
+    localStorage.clear();
+    window.location.href = 'login.html';
+    return {}; 
+  }
+  return {'Authorization': `Bearer ${token}`};g
+}
 
 getView=(element)=>{
     inventoryContainer.classList.add('row-layout')
@@ -45,135 +57,206 @@ let resetForm=(element)=>{
     element.querySelector('#prodPrice').value=""
 }
 
-showBtn.addEventListener('click',async (evt)=>{
+if(showBtn){
+    showBtn.addEventListener('click',async (evt)=>{
     let showURL="http://localhost:8081/api/products"
-    let response=await fetch(showURL,{method:'GET'})
-    let responseObj=await response.json()
-    if(productLoaded){
+    try {
+        let response=await fetch(showURL,{method:'GET',headers:{
+            'Content-Type':'application/json',...getAuthHeader()}})
+        console.log(response)
+        if (response.status === 401) {
+            alert('Session expired! Please login again.');
+            localStorage.clear();
+            // window.location.href = 'login.html';
+            return;
+        }
+        let responseObj=await response.json()
+        if(productLoaded){
+            getView(productsContainer)
+            return;
+        }
+        for (product of responseObj){
+            let prodID=product.prodID
+            let prodPrice=product.prodPrice
+            let prodName=product.prodName
+            let card=document.createElement('div')
+            card.className='product-card'
+            card.innerHTML=`<div class="product-info"><h3>${prodName}</h3><p># ${prodID}</p><div class="product-price">${prodPrice}<i class="fa-solid fa-bangladeshi-taka-sign"></i></div></div>`
+            productsContainer.appendChild(card)
+        }
+        productLoaded=true
         getView(productsContainer)
-        return;
-    }
-    for (product of responseObj){
-        let prodID=product.prodID
-        let prodPrice=product.prodPrice
-        let prodName=product.prodName
-        let card=document.createElement('div')
-        card.className='product-card'
-        card.innerHTML=`<div class="product-info"><h3>${prodName}</h3><p># ${prodID}</p><div class="product-price">${prodPrice}<i class="fa-solid fa-bangladeshi-taka-sign"></i></div></div>`
-        productsContainer.appendChild(card)
-    }
-    productLoaded=true
-    getView(productsContainer)
-})
-
-
-addBtn.addEventListener('click',(evt)=>{
-    getView(addContainer)
-})
-
-addSubmit.addEventListener('click',async (evt)=>{
-    evt.preventDefault()
-    let prodID=document.querySelector('#add-product-form #prodID').value
-    let prodName=document.querySelector('#add-product-form #prodName').value
-    let prodPrice=document.querySelector('#add-product-form #prodPrice').value
-    let addObj={"prodID":prodID,"prodName":prodName,"prodPrice":prodPrice}
-    console.log(addObj)
-    let addURL="http://localhost:8081/api/products"
-    let response=await fetch(addURL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(addObj)})
-    let alertOverlay=document.querySelector('#add-container #alert-overlay')
-    let alertMessage=document.querySelector('#add-container #alert-overlay #alert-message')
-    console.log(response)
-    if(response.ok){
-        alertMessage.innerText="Product added Succesfully"
-    }
-    else{
-        alertMessage.innerText="Someting went wrong !"
+    } catch (error) {
+        console.log(error)
     }
     
-    alertOverlay.classList.add('show')
-
-    alertOverlay.addEventListener('click',()=>{
-        alertOverlay.classList.remove('show')
     })
-    resetForm(addContainer)
+}
+
+if(addBtn && addContainer){
+    addBtn.addEventListener('click',(evt)=>{
+        getView(addContainer)
+    })
+}
+
+if(addSubmit){
+    addSubmit.addEventListener('click',async (evt)=>{
+        evt.preventDefault()
+        let prodID=document.querySelector('#add-product-form #prodID').value
+        let prodName=document.querySelector('#add-product-form #prodName').value
+        let prodPrice=document.querySelector('#add-product-form #prodPrice').value
+        let addObj={"prodID":prodID,"prodName":prodName,"prodPrice":prodPrice}
+        console.log(addObj)
+        let addURL="http://localhost:8081/api/products"
+        let response=await fetch(addURL,{method:'POST',headers:{
+            'Content-Type':'application/json',...getAuthHeader()},body:JSON.stringify(addObj)})
+        let alertOverlay=document.querySelector('#add-container #alert-overlay')
+        let alertMessage=document.querySelector('#add-container #alert-overlay #alert-message')
+        console.log(response)
+        if(response.ok){
+            alertMessage.innerText="Product added Succesfully"
+        }
+        else{
+            alertMessage.innerText="Someting went wrong !"
+        }
+        
+        alertOverlay.classList.add('show')
+
+        alertOverlay.addEventListener('click',()=>{
+            alertOverlay.classList.remove('show')
+        })
+        resetForm(addContainer)
    
-})
-
-addCancel.addEventListener('click',(evt)=>{
-    resetForm(addContainer)
-})
-
-updateBtn.addEventListener('click',(evt)=>{
-    getView(updateContainer)
-})
-
-updateSubmit.addEventListener('click',async (evt)=>{
-    evt.preventDefault()
-    let prodID=document.querySelector('#update-product-form #prodID').value
-    let prodName=document.querySelector('#update-product-form #prodName').value
-    let prodPrice=document.querySelector('#update-product-form #prodPrice').value
-    let updateObj={"prodID":prodID,"prodName":prodName,"prodPrice":prodPrice}
-    console.log(updateObj)
-    
-    let updateURL="http://localhost:8081/api/products"
-    let response=await fetch(updateURL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(updateObj)})
-    
-    let alertOverlay=document.querySelector('#update-container #alert-overlay')
-    let alertMessage=document.querySelector('#update-container #alert-overlay #alert-message')
-    console.log(response)
-
-    if(response.ok){
-        alertMessage.innerText="Product updated succesfully"
-    }
-    else{
-        alertMessage.innerText="Someting went wrong !"
-    }
-    
-    alertOverlay.classList.add('show')
-
-    alertOverlay.addEventListener('click',()=>{
-        alertOverlay.classList.remove('show')
     })
-    resetForm(updateContainer)
-})
+}
 
-updateCancel.addEventListener('click',(evt)=>{
-    resetForm(updateContainer)
-})
-
-deleteBtn.addEventListener('click',(evt)=>{
-    getView(deleteContainer)
-})
-
-deleteSubmit.addEventListener('click',async (evt)=>{
-    evt.preventDefault()
-    let prodID=document.querySelector('#delete-product-form #prodID').value
-    
-    let deleteURL=`http://localhost:8081/api/products/${prodID}`
-    let response=await fetch(deleteURL,{method:'DELETE'})
-    
-    let alertOverlay=document.querySelector('#delete-container #alert-overlay')
-    let alertMessage=document.querySelector('#delete-container #alert-overlay #alert-message')
-    console.log(response)
-
-    if(response.ok){
-        alertMessage.innerText="Product deleted succesfully"
-    }
-    else{
-        alertMessage.innerText="Someting went wrong !"
-    }
-    
-    alertOverlay.classList.add('show')
-
-    alertOverlay.addEventListener('click',()=>{
-        alertOverlay.classList.remove('show')
+if(addCancel){
+    addCancel.addEventListener('click',(evt)=>{
+        resetForm(addContainer)
     })
-    resetForm(deleteContainer)
-})
+}
 
-deleteCancel.addEventListener('click',(evt)=>{
-    resetForm(deleteContainer)
-})
+if(updateBtn && updateContainer){
+    updateBtn.addEventListener('click',(evt)=>{
+        getView(updateContainer)
+    })
+}
+
+if(updateSubmit){
+    updateSubmit.addEventListener('click',async (evt)=>{
+        evt.preventDefault()
+        let prodID=document.querySelector('#update-product-form #prodID').value
+        let prodName=document.querySelector('#update-product-form #prodName').value
+        let prodPrice=document.querySelector('#update-product-form #prodPrice').value
+        let updateObj={"prodID":prodID,"prodName":prodName,"prodPrice":prodPrice}
+        console.log(updateObj)
+        
+        let updateURL="http://localhost:8081/api/products"
+        let response=await fetch(updateURL,{method:'PUT',headers:{
+            'Content-Type':'application/json',...getAuthHeader()},body:JSON.stringify(updateObj)})
+        
+        let alertOverlay=document.querySelector('#update-container #alert-overlay')
+        let alertMessage=document.querySelector('#update-container #alert-overlay #alert-message')
+        console.log(response)
+
+        if(response.ok){
+            alertMessage.innerText="Product updated succesfully"
+            
+        }
+        else{
+            alertMessage.innerText="Someting went wrong !"
+        }
+        
+        alertOverlay.classList.add('show')
+
+        alertOverlay.addEventListener('click',()=>{
+            alertOverlay.classList.remove('show')
+        })
+        resetForm(updateContainer)
+    })
+}
+
+if(updateCancel && updateContainer){
+    updateCancel.addEventListener('click',(evt)=>{
+        resetForm(updateContainer)
+    })
+}
+
+if(deleteBtn && deleteContainer){
+    deleteBtn.addEventListener('click',(evt)=>{
+        getView(deleteContainer)
+    })
+}
+
+if(deleteSubmit){
+    deleteSubmit.addEventListener('click',async (evt)=>{
+        evt.preventDefault()
+        let prodID=document.querySelector('#delete-product-form #prodID').value
+        
+        let deleteURL=`http://localhost:8081/api/products/${prodID}`
+        let response=await fetch(deleteURL,{method:'DELETE',headers:{...getAuthHeader()}})
+        
+        let alertOverlay=document.querySelector('#delete-container #alert-overlay')
+        let alertMessage=document.querySelector('#delete-container #alert-overlay #alert-message')
+        console.log(response)
+
+        if(response.ok){
+            alertMessage.innerText="Product deleted succesfully"
+        }
+        else{
+            alertMessage.innerText="Someting went wrong !"
+        }
+        
+        alertOverlay.classList.add('show')
+
+        alertOverlay.addEventListener('click',()=>{
+            alertOverlay.classList.remove('show')
+        })
+        resetForm(deleteContainer)
+    })
+}
+
+if(deleteCancel && deleteContainer){
+    deleteCancel.addEventListener('click',(evt)=>{
+        resetForm(deleteContainer)
+    })
+}
+
+if(searchBtn){
+    searchBtn.addEventListener('click',async(evt)=>{
+        evt.preventDefault()
+        console.log('Search button click')
+        let prodID=document.querySelector('.search-container input').value
+        console.log(`product id to search is ${prodID}`)
+        let searchURL=`http://localhost:8081/api/products/${prodID}`
+        let searchOverlay=document.querySelector('#search-overlay')
+        
+        try{
+            let responseObj = await fetch(searchURL,{method:'GET',headers:{...getAuthHeader()}})
+            let response=await responseObj.json()
+            console.log("Search response",responseObj)
+            let card=document.createElement('div')
+            card.className='product-card'
+            card.innerHTML=`<div class="product-info"><h3>${response.prodName}</h3><p># ${response.prodID}</p><div class="product-price">${response.prodPrice}<i class="fa-solid fa-bangladeshi-taka-sign"></i></div></div>`
+            searchOverlay.appendChild(card)
+        }
+        catch(e){
+            let card=document.createElement('div')
+            card.className='product-card'
+            card.innerHTML=`<div class="product-info"><h3>Product Not Found</h3></div>`
+            searchOverlay.appendChild(card)
+        }
+        
+        searchOverlay.classList.add('show')
+
+        searchOverlay.addEventListener('click',()=>{
+            searchOverlay.classList.remove('show')
+            searchOverlay.innerHTML=``
+        })
+    })
+}
+
+
 
 
 
